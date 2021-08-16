@@ -1,7 +1,38 @@
+import React from 'react'
+import { render, screen } from '@testing-library/react'
+
+import Display from '../Display'
+import fetchShow from '../../api/fetchShow'
+import userEvent from '@testing-library/user-event'
 
 
+const testDisplay=  {
+    name:'Fake Show',
+    image:null,
+    summary:'this is a fake summary',
+    seasons: [
+        {id: 1, name:'season 1', episodes: []},
+        {id: 2, name:'season 2', episodes: []}
+    ]
+
+}
 
 
+test('display component renders without any passed props', ()=>{
+        render(<Display />)
+})
+
+
+test('components displays when fetch button is pressed', async ()=>{
+    fetchShow.mockResolvedValueOnce({testDisplay})
+    render(<Display/>)
+    const button = screen.getByLabelText(/press to get show data/i)
+    userEvent.click(button)
+    const seasons = await screen.findAllByTestId('episodes-container')
+    expect(seasons).toHaveLength(2)
+    
+    
+})
 
 
 
