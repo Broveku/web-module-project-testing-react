@@ -1,47 +1,34 @@
-import React from 'react'
-import { render, screen } from '@testing-library/react'
+import React from "react";
+import { screen, render } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import App from "../../App";
+import Display from "../Display";
 
-import Display from '../Display'
-import fetchShow from '../../api/fetchShow'
-import userEvent from '@testing-library/user-event'
+import fetchShow from "../../api/fetchShow";
+jest.mock("../../api/fetchShow");
 
-
-const testDisplay=  {
-    name:'Fake Show',
-    image:null,
-    summary:'this is a fake summary',
-    seasons: [
-        {id: 1, name:'season 1', episodes: []},
-        {id: 2, name:'season 2', episodes: []}
-    ]
-
-}
 
 
 test('display component renders without any passed props', ()=>{
         render(<Display />)
 })
 
-
 test('components displays when fetch button is pressed', async ()=>{
-    fetchShow.mockResolvedValueOnce({testDisplay})
-    render(<Display/>)
-    const button = screen.getByLabelText(/press to get show data/i)
-    userEvent.click(button)
-    const seasons = await screen.findAllByTestId('episodes-container')
-    expect(seasons).toHaveLength(2)
-    
-    
-})
-
-
-
-
-
-
-
-
-
+    fetchShow.mockResolvedValueOnce({
+        name: "fake show",
+        image: null,
+        summary: "fake summary",
+        seasons: [
+          { id: 1, name: "season 1", episodes: [] },
+          { id: 2, name: "season 2", episodes: [] },
+        ],
+      });
+      render(<Display />);
+      const button = screen.getByRole("button");
+      userEvent.click(button);
+      const show = await screen.findByTestId("show-container");
+      expect(show).toBeInTheDocument();
+    });
 
 
 ///Tasks:
